@@ -1,0 +1,13 @@
+.scrollable-card-wrapper{
+    border: 1px rgb(241, 241, 241) solid;
+    padding: 30px;
+    display: flex;
+    margin: 70px;
+    min-width: 900px;
+    height: 500px;
+    scroll-snap-align: center;
+    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2);
+    text-align: justify; 
+    justify-content: center;
+    align-items: center;
+}
