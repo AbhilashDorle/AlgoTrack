@@ -7,7 +7,7 @@ function App() {
   const [cardComponent, setCardComponent] = useState([]);
 
   const addCard = () => {
-    setCardComponent(c => [...c, cardComponent])
+    setCardComponent(prev => [...prev, {}]);
   }
 
   return (
