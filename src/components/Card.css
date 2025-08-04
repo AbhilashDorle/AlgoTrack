@@ -2,6 +2,7 @@
     border: 1px rgb(241, 241, 241) solid;
     padding: 30px;
     display: flex;
+    flex: 0 0 60%; 
     margin: 70px;
     min-width: 900px;
     height: 500px;
@@ -10,4 +11,32 @@
     text-align: justify; 
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    gap: 70px;
+}
+
+.title-input-tag{
+    width: 600px;
+    height: 40px;
+    border-radius: 10px;
+    font-size: 30px;
+    text-align: center;
+}
+
+.description-input-tag{
+    width: 1100px;
+    height: 300px;
+    border-radius: 10px;
+    font-size: 50px;
+    text-align: center;
+}
+
+.title-input-tag::placeholder{
+    text-align: center;
+    font-size: 30px;
+}
+
+.description-input-tag::placeholder{
+    text-align: center;
+    font-size: 50px;
 }
