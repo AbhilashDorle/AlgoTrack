@@ -3,10 +3,7 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background: #536976;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to bottom, #292E49, #536976);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to bottom, #292E49, #536976); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
+    background: linear-gradient(135deg, #fceabb, #f8b500); 
 }
 
 .user-details-div{
@@ -16,8 +13,9 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    border:  outset;
+    border:  groove;
     border-radius: 10px;
+    box-shadow: 5px 3px 3px white;
 }
 
 .username-input{
@@ -28,7 +26,6 @@
     font-size: 25px;
     background: transparent;
     font-weight: bolder;
-    color: white;
 }
 
 .password-input{
@@ -39,7 +36,6 @@
     font-size: 25px;
     background: transparent;
     font-weight: bolder;
-    color: white;
 }
 
 .login-btn{
@@ -50,20 +46,17 @@
     margin-top: 10px;
     border-radius: 5px;
     font-weight: bolder;
-    color: white;
 }
 
 .tagline-text{
     font-size: 25px;
     margin-bottom: 0;
     font-weight: bolder;
-    color: white;
 }
 
 .signin-text{
     margin-bottom: 20px;
     font-weight: bolder;
-    color: white;
 }
 
 .input-details-div{
@@ -82,5 +75,5 @@
     margin-right: 25px;
     margin-top: -5px;
     font-weight: bolder;
-    color: tan;
+    color: rgb(182, 29, 29);
 }

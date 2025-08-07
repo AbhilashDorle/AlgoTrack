@@ -16,11 +16,13 @@ function App() {
     <div className='main-div'>
       {!loginFlag && <Login changeFlag = {setLoginFlag}/>}
       {loginFlag && 
-        <div>
+        <div className="logged-in-container">
           <button onClick={addCard} className='addCard-btn'>Add card</button>
-          <div className="main-app-div">
-            {cardComponent.map(()=> <Card />)}
-          </div>
+            <div className='scrollbar-div'>
+              <div className="main-app-div">
+                {cardComponent.map(()=> <Card />)}
+              </div>
+            </div>
         </div>
       }
     </div>
