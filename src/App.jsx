@@ -12,12 +12,20 @@ function App() {
     setCardComponent(prev => [...prev, {}]);
   }
 
+  const addToDb = () =>{
+    fetch('http://localhost:8080/add/card')
+    .then(response=>response.json())
+    .then(data=>console.log(data))
+    .catch(error=>console.log(error))
+  }
+
   return (
     <div className='main-div'>
       {!loginFlag && <Login changeFlag = {setLoginFlag}/>}
       {loginFlag && 
         <div className="logged-in-container">
           <button onClick={addCard} className='addCard-btn'>Add card</button>
+          <button onClick={addToDb}className='submit-btn'>Submit</button>
             <div className='scrollbar-div'>
               <div className="main-app-div">
                 {cardComponent.map(()=> <Card />)}
