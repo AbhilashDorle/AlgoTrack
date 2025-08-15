@@ -6,10 +6,11 @@ import (
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Request Received")
+	w.Header().Set("Access-Control-Allow-Origin", "*") // allow CORS for testing
+	fmt.Fprint(w, `{"message": "Request Received"}`)
 }
 
 func main() {
-	http.HandleFunc("/add/playlist", handler)
+	http.HandleFunc("/add/card", handler)
 	http.ListenAndServe(":8080", nil)
 }
