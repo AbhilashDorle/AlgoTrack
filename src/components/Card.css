@@ -1,28 +1,19 @@
-.scrollable-card-wrapper{
-    border: 1px rgb(241, 241, 241) solid;
-    padding: 30px;
-    display: flex;
-    flex: 0 0 60%; 
-    margin: 70px;
-    min-width: 900px;
-    height: 500px;
-    scroll-snap-align: center;
-    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2);
-    text-align: justify; 
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    gap: 70px;
-    background-color: #fff8dc;  /* light “sticky note” yellow */
-    border: 2px dashed #ffcc00;
-    box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+.scrollable-card-wrapper {
+  border: 1px solid rgb(241, 241, 241);
+  margin: 0 0 20px 0;
+  height: 600px;
+  width: 100%;        
+  background-color: #faf3d7;
+  box-shadow: 5px 5px 20px rgba(203, 36, 36, 0.2);
+  border-radius: 10px;
 }
 
+
 .title-input-tag{
-    width: 600px;
-    height: 40px;
+    width: 500px;
+    height: 3rem;
     border-radius: 10px;
-    font-size: 30px;
+    font-size: 1.2rem;
     text-align: center;
     background: transparent;
     border:  groove;
@@ -30,8 +21,8 @@
 }
 
 .description-input-tag{
-    width: 1100px;
-    height: 300px;
+    /* width: 50%; */
+    height: 350px;
     border-radius: 10px;
     font-size: 50px;
     text-align: center;
@@ -43,10 +34,41 @@
 .title-input-tag::placeholder{
     text-align: center;
     font-size: 30px;
+    font-weight: bold;
     
 }
 
 .description-input-tag::placeholder{
     text-align: center;
     font-size: 50px;
+}
+
+.card-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px
+}
+
+.input-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+.submit-btn{
+  display: block;
+  margin-left: auto;
+  margin-right: 10px;
+  width: 13%;
+  max-width: 200px;
+  height: 60px;
+  background: transparent;
+  margin-top: 30px;
+  background-color: #f9e69c;
+  border: 1px solid #e6e6e6;
+  font-weight: bold;
+  font-size: 1.7rem;
 }
