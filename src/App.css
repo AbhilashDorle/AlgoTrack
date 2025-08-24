@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: linear-gradient(135deg, #fceabb, #f8b500);  
+  background: linear-gradient(145deg, #f8da8c, #f8b500, #f6d06f);  
 }
 
 .logged-in-container {
@@ -15,23 +15,28 @@
   overflow: hidden;
 }
 
+.main-app-div{
+flex: 1;
+overflow-y: auto;
+overflow-x: hidden;
+height: 100%;
+}
 
-.scrollbar-div {
-  flex: 1; 
-  overflow-x: auto;
-  overflow-y: hidden;
-  width: 100%;
+.my-masonry-grid {
+  display: flex;
+  margin: 30px; 
+  width: auto;
+  gap: 70px;
+}
+.my-masonry-grid_column {
+  padding-left: 30px;
+  padding-right: 30px;
+  background-clip: padding-box;
 }
 
 
-.main-app-div{
-  display: flex;
-  align-items: center;
-  height: 100%;
-  scroll-behavior: smooth;
-  overflow-x: scroll;
-  overflow-y: hidden;
-  scroll-snap-type:x mandatory;
+.my-masonry-grid_column > div {
+  margin-bottom: 30px;
 }
 
 .addCard-btn{
@@ -49,17 +54,31 @@
   font-size: 25px;
 }
 
-.submit-btn{
-  display: block;
-  margin-left: auto;
-  margin-right: 90px;
-  width: 200px;
-  height: 60px;
-  background: transparent;
-  margin-top: 30px;
-  background-color: #fffdf7; 
-  border: 1px solid #e6e6e6;
-  box-shadow: 5px 3px 3px white;
-  font-weight: bold;
-  font-size: 25px;
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.expanded-card {
+  background: #faf3d7;
+  width: 800px;
+  max-width: 90%;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 8px 30px rgba(0,0,0,0.25);
+  animation: popIn 0.2s ease;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
