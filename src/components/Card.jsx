@@ -3,10 +3,17 @@ import './Card.css'
 
 export default function Card({ title, description, index, updateCard, onClick }){
 
+    const addToDb = () =>{
+        fetch('http://localhost:8080/add/card')
+        .then(response=>response.json())
+        .then(data=>console.log(data))
+        .catch(error=>console.log(error))
+      }
+
     return(
         <div className="scrollable-card-wrapper" onClick={onClick}>
             <div className="card-container">
-                <button className="submit-btn">submit</button>
+                <button className="submit-btn" onClick={addToDb}>submit</button>
                 <div className="input-container">
                     <label className="title-label">
                         <input 

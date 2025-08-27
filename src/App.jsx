@@ -24,12 +24,7 @@ function App() {
     500: 1      // mobile
   };
 
-  // const addToDb = () =>{
-  //   fetch('http://localhost:8080/add/card')
-  //   .then(response=>response.json())
-  //   .then(data=>console.log(data))
-  //   .catch(error=>console.log(error))
-  // }
+  
 
   return (
     <div className='main-div'>
