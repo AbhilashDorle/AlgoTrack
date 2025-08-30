@@ -13,7 +13,7 @@ function App() {
   const addCard = () => {
   setCardComponent(prev => [
       ...prev,
-      { title: "", description: "" } // start empty
+      { title: "", description: "", isNew: true } // start empty
     ]);
   };
 
@@ -52,12 +52,14 @@ function App() {
                     <Card
                       key={i}
                       index={i}
+                      isNew={card.isNew}
                       title={card.title}
                       description={card.description}
                       updateCard={(index, field, value) => {
                         setCardComponent(prev => {
                           const newCards = [...prev];
                           newCards[index][field] = value; // update the field
+                          newCards[index].isNew=false;
                           return newCards;
                         });
                       }}

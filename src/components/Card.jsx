@@ -1,10 +1,16 @@
 import React from "react";
 import './Card.css'
 
-export default function Card({ title, description, index, updateCard, onClick }){
+export default function Card({ title, description, index, updateCard, onClick, isNew }){
 
     const addToDb = () =>{
-        fetch('http://localhost:8080/add/card')
+        fetch('http://localhost:8080/add/card',{
+            method: "POST",
+            headers: {
+                     'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({title, description})
+        })
         .then(response=>response.json())
         .then(data=>console.log(data))
         .catch(error=>console.log(error))
@@ -13,7 +19,9 @@ export default function Card({ title, description, index, updateCard, onClick })
     return(
         <div className="scrollable-card-wrapper" onClick={onClick}>
             <div className="card-container">
-                <button className="submit-btn" onClick={addToDb}>submit</button>
+                <button className="submit-btn" onClick={addToDb}>
+                    {isNew ? "Submit" : "Update"}
+                </button>
                 <div className="input-container">
                     <label className="title-label">
                         <input 

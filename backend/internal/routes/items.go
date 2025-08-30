@@ -7,7 +7,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func RegisterItemRoutes(r *mux.Router) {
+func RegisterCardRoutes(r *mux.Router) {
 	fmt.Println("Request received in router")
-	r.HandleFunc("/add/card", handlers.AddItem).Methods("GET")
+	r.HandleFunc("/add/card", handlers.AddCard).Methods("POST")
 }

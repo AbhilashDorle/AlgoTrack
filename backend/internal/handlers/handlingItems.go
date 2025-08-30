@@ -1,23 +1,26 @@
 package handlers
 
 import (
-	"fmt"
+	"encoding/json"
 	"net/http"
 )
 
-func AddItem(w http.ResponseWriter, r *http.Request) {
-	// 	var item Item
-	// 	if err := json.NewDecoder(r.Body).Decode(&item); err != nil {
-	// 		http.Error(w, err.Error(), http.StatusBadRequest)
-	// 		return
-	// 	}
+type Card struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+}
 
-	// 	if err := db.InsertItem(item); err != nil {
-	// 		http.Error(w, "Failed to insert item", http.StatusInternalServerError)
-	// 		return
-	// 	}
+func AddCard(w http.ResponseWriter, r *http.Request) {
+	var card Card
 
-	// 	w.WriteHeader(http.StatusCreated)
-	// 	json.NewEncoder(w).Encode(item)
-	fmt.Println("Request Received in handler")
+	// Decode JSON from request body
+	if err := json.NewDecoder(r.Body).Decode(&card); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+
+	// (Here you’d insert into DB — for now, just echo back)
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	json.NewEncoder(w).Encode(card)
 }
