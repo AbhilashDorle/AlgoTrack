@@ -13,7 +13,7 @@ function App() {
   const addCard = () => {
   setCardComponent(prev => [
       ...prev,
-      { title: "", description: "", isNew: true } // start empty
+      { id: Date.now(), title: "", description: "", isSubmitted: false } // start empty
     ]);
   };
 
@@ -36,12 +36,33 @@ function App() {
           <button onClick={addCard} className='addCard-btn'>Add card</button>
               <div className="main-app-div">
                 {selectedCard !== null && (
-                  <div className="overlay" onClick={() => setSelectedCard(null)}>
-                    <div className="expanded-card" onClick={(e) => e.stopPropagation()}>
-                      <Card {...cardComponent[selectedCard]}/>
-                    </div>
-                  </div>
-                )}
+  <div className="overlay" onClick={() => setSelectedCard(null)}>
+    <div className="expanded-card" onClick={(e) => e.stopPropagation()}>
+      <Card
+        title={cardComponent[selectedCard].title}
+        description={cardComponent[selectedCard].description}
+        index={selectedCard}
+        isSubmitted={cardComponent[selectedCard].isSubmitted}
+        updateCard={(index, field, value) => {
+          setCardComponent(prev => {
+            const newCards = [...prev];
+            newCards[index] = { ...newCards[index], [field]: value };
+            return newCards;
+          });
+        }}
+        markSubmitted={() => {
+          setCardComponent(prev => {
+            const newCards = [...prev];
+            newCards[selectedCard] = { ...newCards[selectedCard], isSubmitted: true };
+            return newCards;
+          });
+        }}
+        onClick={() => {}}
+      />
+    </div>
+  </div>
+)}
+
 
                 <Masonry
                   breakpointCols={breakpointColumns}
@@ -49,23 +70,30 @@ function App() {
                   columnClassName="my-masonry-grid_column"
                   >
                   {cardComponent.map((card, i) => (
-                    <Card
-                      key={i}
-                      index={i}
-                      isNew={card.isNew}
-                      title={card.title}
-                      description={card.description}
-                      updateCard={(index, field, value) => {
-                        setCardComponent(prev => {
-                          const newCards = [...prev];
-                          newCards[index][field] = value; // update the field
-                          newCards[index].isNew=false;
-                          return newCards;
-                        });
-                      }}
-                      onClick={() => setSelectedCard(i)}
-                    />
-                  ))}
+                <Card
+                  key={i}
+                  index={i}
+                  title={card.title}
+                  description={card.description}
+                  isSubmitted={card.isSubmitted}
+                  updateCard={(index, field, value) => {
+                    setCardComponent(prev => {
+                      const newCards = [...prev];
+                      // create a new object to prevent React input issues
+                      newCards[index] = { ...newCards[index], [field]: value };
+                      return newCards;
+                    });
+                  }}
+                  markSubmitted={() => {
+                    setCardComponent(prev => {
+                      const newCards = [...prev];
+                      newCards[i] = { ...newCards[i], isSubmitted: true };
+                      return newCards;
+                    });
+                  }}
+                  onClick={() => setSelectedCard(i)}
+                />
+              ))}
                 </Masonry>
 
               </div>
