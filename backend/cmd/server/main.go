@@ -4,19 +4,19 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/AbhilashDorle/AlgoTrack/internal/db"
 	"github.com/AbhilashDorle/AlgoTrack/internal/routes"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
 )
-
-// func handler(w http.ResponseWriter, r *http.Request) {
-// 	w.Header().Set("Access-Control-Allow-Origin", "*") // allow CORS for testing
-// 	fmt.Fprint(w, `{"message": "Request Received"}`)
-// }
 
 func main() {
 	r := mux.NewRouter()
 	routes.RegisterCardRoutes(r)
+
+	db.Connect()
+	defer db.DB.Close()
 
 	// CORS setup (allow all origins for dev)
 	corsObj := handlers.CORS(
