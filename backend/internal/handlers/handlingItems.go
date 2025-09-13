@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/AbhilashDorle/AlgoTrack/internal/db"
+	"github.com/gorilla/mux"
 )
 
 type Card struct {
@@ -28,6 +30,8 @@ func AddCard(w http.ResponseWriter, r *http.Request) {
 		"INSERT INTO cards (title, description) VALUES ($1, $2) RETURNING id",
 		card.Title, card.Description,
 	).Scan(&card.ID)
+
+	fmt.Println("Inserted card with ID:", card.ID)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -84,4 +88,41 @@ func UpdateCard(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*") // For development only
 	json.NewEncoder(w).Encode(card)
+}
+
+// DeleteCard handles DELETE /delete/card/{id}
+func DeleteCard(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+
+	// Convert string ID to int
+	id, err := strconv.Atoi(idStr)
+	if err != nil || id <= 0 {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid card ID"})
+		return
+	}
+
+	// Delete from DB
+	res, err := db.DB.Exec("DELETE FROM cards WHERE id = $1", id)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		return
+	}
+
+	rowsAffected, _ := res.RowsAffected()
+	if rowsAffected == 0 {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Card not found"})
+		return
+	}
+
+	// Success response
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*") // dev only
+	json.NewEncoder(w).Encode(map[string]string{"message": "Card deleted successfully"})
 }

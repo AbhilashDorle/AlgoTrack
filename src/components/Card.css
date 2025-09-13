@@ -1,56 +1,56 @@
 .scrollable-card-wrapper {
-  border: 1px solid rgb(241, 241, 241);
-  margin: 0 0 20px 0;
-  height: 600px;
-  width: 100%;        
-  background-color: #faf3d7;
-  box-shadow: 5px 5px 20px rgba(203, 36, 36, 0.2);
-  border-radius: 10px;
+    border: 1px solid rgb(241, 241, 241);
+    margin: 0 0 20px 0;
+    height: 600px;
+    width: 100%;
+    background-color: #faf3d7;
+    box-shadow: 5px 5px 20px rgba(203, 36, 36, 0.2);
+    border-radius: 10px;
 }
 
 
-.title-input-tag{
+.title-input-tag {
     width: 500px;
     height: 3rem;
     border-radius: 10px;
     font-size: 1.2rem;
     text-align: center;
     background: transparent;
-    border:  groove;
-    
+    border: groove;
+
 }
 
-.description-input-tag{
+.description-input-tag {
     /* width: 50%; */
     height: 350px;
     border-radius: 10px;
     font-size: 50px;
     text-align: center;
     background: transparent;
-    border:  groove;
-    
+    border: groove;
+
 }
 
-.title-input-tag::placeholder{
+.title-input-tag::placeholder {
     text-align: center;
     font-size: 30px;
     font-weight: bold;
-    
+
 }
 
-.description-input-tag::placeholder{
+.description-input-tag::placeholder {
     text-align: center;
     font-size: 50px;
 }
 
-.card-container{
+.card-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 20px
 }
 
-.input-container{
+.input-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -58,10 +58,29 @@
     gap: 30px;
 }
 
+.btn-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* Optional: Vertically aligns buttons if they have different heights */
+    width: 100%;
+}
+
 .submit-btn{
-  display: block;
-  margin-left: auto;
-  margin-right: 10px;
+  margin-left: 20px;
+  width: 13%;
+  max-width: 200px;
+  height: 60px;
+  background: transparent;
+  margin-top: 30px;
+  background-color: #f9e69c;
+  border: 1px solid #e6e6e6;
+  font-weight: bold;
+  font-size: 1.7rem;
+}
+
+.delete-btn{
+  margin-right: 20px;
   width: 13%;
   max-width: 200px;
   height: 60px;
