@@ -1,48 +1,81 @@
 import React from "react";
 import './Card.css'
 
-export default function Card({ title, description, index, updateCard, onClick, isSubmitted, markSubmitted }){
+export default function Card({ id, title, description, index, updateCard, onClick, isSubmitted, markSubmitted, deleteCard }) {
 
-    const addToDb = () =>{
-        console.log("Button Clicked")
+    const addToDb = () => {
+        console.log("Submit/Update Button Clicked")
         const endpoint = isSubmitted ? 'http://localhost:8080/update/card' : 'http://localhost:8080/add/card';
-        const reqType = isSubmitted ? 'PUT': 'POST';
-        fetch(endpoint,{
+        const reqType = isSubmitted ? 'PUT' : 'POST';
+
+        const bodyData = isSubmitted ? { id, title, description }: { title, description };  
+
+        fetch(endpoint, {
             method: reqType,
             headers: {
-                     'Content-Type': 'application/json'
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({title, description})
+            body: JSON.stringify(bodyData)
         })
-        .then(response=>response.json())
-        .then(data=>{console.log(data);
-             markSubmitted();
-        })
-        .catch(error=>console.log(error))
-      }
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                markSubmitted();
+                updateCard(index, "id", data.id);
+            })
+            .catch(error => console.log(error))
+    }
 
-    return(
+    const handleDelete = async () => {
+  try {
+    const response = await fetch(`http://localhost:8080/cards/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete card");
+    }
+
+    // Call parent deleteCard to update state
+    deleteCard(index);
+  } catch (err) {
+    console.error("Error deleting card:", err);
+  }
+};
+
+
+    return (
         <div className="scrollable-card-wrapper" onClick={onClick}>
             <div className="card-container">
-                <button className="submit-btn" onClick={addToDb}>
-                    {isSubmitted ? "Update" : "Submit"}
-                </button>
+                <div className="btn-container">
+                    <button className="submit-btn" onClick={addToDb}>
+                        {isSubmitted ? "Update" : "Submit"}
+                    </button>
+                    <button className="delete-btn" 
+                        onClick={(e) => 
+                            { 
+                              handleDelete();
+                              e.stopPropagation(); 
+                            }}>
+                        Remove
+                    </button>
+                </div>
                 <div className="input-container">
                     <label className="title-label">
-                        <input 
-                        placeholder="Revision Title" 
-                        type="text" 
-                        value={title}
-                        className="title-input-tag"
-                        onChange={e => updateCard(index, "title", e.target.value)}
-                        onClick={(e) => e.stopPropagation()}
+                        <input
+                            placeholder="Revision Title"
+                            type="text"
+                            value={title}
+                            className="title-input-tag"
+                            onChange={e => updateCard(index, "title", e.target.value)}
+                            onClick={(e) => e.stopPropagation()}
                         ></input>
                     </label>
 
                     <label className="description-label">
-                        <textarea 
-                            placeholder="Description" 
-                            type="text" 
+                        <textarea
+                            placeholder="Description"
+                            type="text"
                             value={description}
                             className="description-input-tag"
                             onChange={e => updateCard(index, "description", e.target.value)}
