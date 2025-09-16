@@ -14,8 +14,10 @@ type Card struct {
 	ID          int    `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
+	UserID      int    `json:"user_id"`
 }
 
+// AddCard inserts a new card into the DB
 func AddCard(w http.ResponseWriter, r *http.Request) {
 	var card Card
 	fmt.Println("Inside Add Card")
@@ -26,23 +28,31 @@ func AddCard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := db.DB.QueryRow(
-		"INSERT INTO cards (title, description) VALUES ($1, $2) RETURNING id",
-		card.Title, card.Description,
-	).Scan(&card.ID)
+	// Validate UserID
+	if card.UserID <= 0 {
+		http.Error(w, "UserID missing or invalid", http.StatusBadRequest)
+		return
+	}
 
-	fmt.Println("Inserted card with ID:", card.ID)
+	// Insert into DB
+	err := db.DB.QueryRow(
+		"INSERT INTO cards (title, description, user_id) VALUES ($1, $2, $3) RETURNING id",
+		card.Title, card.Description, card.UserID,
+	).Scan(&card.ID)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// (Here you’d insert into DB — for now, just echo back)
+
+	fmt.Println("Inserted card with ID:", card.ID)
+
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(card)
 }
 
+// UpdateCard updates an existing card
 func UpdateCard(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
@@ -56,18 +66,18 @@ func UpdateCard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Validate ID
-	if card.ID <= 0 {
+	// Validate ID and UserID
+	if card.ID <= 0 || card.UserID <= 0 {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid card ID"})
+		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid card ID or user ID"})
 		return
 	}
 
-	// Update DB
+	// Update DB - ensure only the owner can update
 	res, err := db.DB.Exec(
-		"UPDATE cards SET title = $1, description = $2 WHERE id = $3",
-		card.Title, card.Description, card.ID,
+		"UPDATE cards SET title = $1, description = $2 WHERE id = $3 AND user_id = $4",
+		card.Title, card.Description, card.ID, card.UserID,
 	)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
@@ -80,17 +90,17 @@ func UpdateCard(w http.ResponseWriter, r *http.Request) {
 	if err != nil || rowsAffected == 0 {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(map[string]string{"error": "No card found with given ID"})
+		json.NewEncoder(w).Encode(map[string]string{"error": "No card found with given ID for this user"})
 		return
 	}
 
 	// Success response
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*") // For development only
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(card)
 }
 
-// DeleteCard handles DELETE /delete/card/{id}
+// DeleteCard handles DELETE /cards/{id}
 func DeleteCard(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	idStr := vars["id"]
@@ -104,8 +114,22 @@ func DeleteCard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Delete from DB
-	res, err := db.DB.Exec("DELETE FROM cards WHERE id = $1", id)
+	// Optional: get user ID from request body or token
+	var payload struct {
+		UserID int `json:"user_id"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil || payload.UserID <= 0 {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": "UserID missing or invalid"})
+		return
+	}
+
+	// Delete from DB - ensure only owner can delete
+	res, err := db.DB.Exec(
+		"DELETE FROM cards WHERE id = $1 AND user_id = $2",
+		id, payload.UserID,
+	)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -117,12 +141,12 @@ func DeleteCard(w http.ResponseWriter, r *http.Request) {
 	if rowsAffected == 0 {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(map[string]string{"error": "Card not found"})
+		json.NewEncoder(w).Encode(map[string]string{"error": "Card not found for this user"})
 		return
 	}
 
 	// Success response
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*") // dev only
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(map[string]string{"message": "Card deleted successfully"})
 }
