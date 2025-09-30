@@ -41,6 +41,7 @@ function App() {
           }} 
         />
       }
+{/* ******LOGOUT FUNCTIONALITY REMAINS************ */}
 
       {loginFlag &&
         <div className="logged-in-container">
