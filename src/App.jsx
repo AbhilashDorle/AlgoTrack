@@ -8,7 +8,7 @@ function App() {
   const [cardComponent, setCardComponent] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
   const [loginFlag, setLoginFlag] = useState(false);
-  const [userId, setUserId] = useState(null); // track logged-in user
+  // const [userId, setUserId] = useState(null); // track logged-in user
 
   // Add a new empty card
   const addCard = () => {
@@ -18,10 +18,19 @@ function App() {
     ]);
   };
 
-  // Delete a card locally
+  // Delete card locally
   const deleteCard = (index) => {
-    setCardComponent(prev => prev.filter((_, j) => j !== index));
+    setCardComponent(prev => prev.filter((_, i) => i !== index));
     setSelectedCard(null);
+  };
+
+  // Update card fields
+  const updateCard = (index, field, value) => {
+    setCardComponent(prev => {
+      const newCards = [...prev];
+      newCards[index] = { ...newCards[index], [field]: value };
+      return newCards;
+    });
   };
 
   const breakpointColumns = {
@@ -37,7 +46,7 @@ function App() {
         <Login 
           changeFlag={(flag, id) => { 
             setLoginFlag(flag); 
-            setUserId(id); // capture logged-in user ID
+            // setUserId(id); // capture logged-in user ID
           }} 
         />
       }
@@ -57,22 +66,8 @@ function App() {
                     description={cardComponent[selectedCard].description}
                     index={selectedCard}
                     isSubmitted={cardComponent[selectedCard].isSubmitted}
-                    userId={userId}
-                    updateCard={(index, field, value) => {
-                      setCardComponent(prev => {
-                        const newCards = [...prev];
-                        newCards[index] = { ...newCards[index], [field]: value };
-                        return newCards;
-                      });
-                    }}
-                    markSubmitted={() => {
-                      setCardComponent(prev => {
-                        const newCards = [...prev];
-                        newCards[selectedCard] = { ...newCards[selectedCard], isSubmitted: true };
-                        return newCards;
-                      });
-                    }}
-                    deleteCard={() => deleteCard(selectedCard)}
+                    updateCard={updateCard}
+                    deleteCard={deleteCard}
                     onClick={() => {}}
                   />
                 </div>
@@ -92,22 +87,8 @@ function App() {
                   description={card.description}
                   index={i}
                   isSubmitted={card.isSubmitted}
-                  userId={userId}
-                  updateCard={(index, field, value) => {
-                    setCardComponent(prev => {
-                      const newCards = [...prev];
-                      newCards[index] = { ...newCards[index], [field]: value };
-                      return newCards;
-                    });
-                  }}
-                  markSubmitted={() => {
-                    setCardComponent(prev => {
-                      const newCards = [...prev];
-                      newCards[i] = { ...newCards[i], isSubmitted: true };
-                      return newCards;
-                    });
-                  }}
-                  deleteCard={() => deleteCard(i)}
+                  updateCard={updateCard}
+                  deleteCard={deleteCard}
                   onClick={() => setSelectedCard(i)}
                 />
               ))}

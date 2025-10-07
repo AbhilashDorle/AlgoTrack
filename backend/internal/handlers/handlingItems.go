@@ -14,7 +14,7 @@ type Card struct {
 	ID          int    `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
-	UserID      int    `json:"user_id"`
+	// UserID      int    `json:"user_id"`
 }
 
 // AddCard inserts a new card into the DB
@@ -28,25 +28,21 @@ func AddCard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Validate UserID
-	if card.UserID <= 0 {
-		http.Error(w, "UserID missing or invalid", http.StatusBadRequest)
-		return
-	}
-
-	// Insert into DB
+	fmt.Println("Card Title:", card.Title)
+	fmt.Println("Card Description:", card.Description)
+	/*id, title description, user_id*/
 	err := db.DB.QueryRow(
-		"INSERT INTO cards (title, description, user_id) VALUES ($1, $2, $3) RETURNING id",
-		card.Title, card.Description, card.UserID,
+		"INSERT INTO cards (title, description) VALUES ($1, $2) RETURNING id",
+		card.Title, card.Description,
 	).Scan(&card.ID)
+
+	fmt.Println("Inserted card with ID:", card.ID)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	fmt.Println("Inserted card with ID:", card.ID)
-
+	// (Here you’d insert into DB — for now, just echo back)
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(card)
@@ -65,19 +61,21 @@ func UpdateCard(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request payload"})
 		return
 	}
-
+	fmt.Println("Card Title:", card.Title)
+	fmt.Println("Card Title:", card.ID)
+	fmt.Println("Card Description:", card.Description)
 	// Validate ID and UserID
-	if card.ID <= 0 || card.UserID <= 0 {
+	if card.ID <= 0 {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid card ID or user ID"})
+		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid card ID"})
 		return
 	}
 
 	// Update DB - ensure only the owner can update
 	res, err := db.DB.Exec(
-		"UPDATE cards SET title = $1, description = $2 WHERE id = $3 AND user_id = $4",
-		card.Title, card.Description, card.ID, card.UserID,
+		"UPDATE cards SET title = $1, description = $2 WHERE id = $3",
+		card.Title, card.Description, card.ID,
 	)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
