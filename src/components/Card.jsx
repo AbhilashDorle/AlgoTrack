@@ -1,15 +1,15 @@
 import React from "react";
 import './Card.css'
 
-export default function Card({ id, title, description, index, updateCard, onClick, isSubmitted, markSubmitted, deleteCard }) {
+export default function Card({ id, title, description, index, updateCard, onClick, isSubmitted, deleteCard }) {
 
     const addToDb = () => {
         console.log("Submit/Update Button Clicked")
         const endpoint = isSubmitted ? 'http://localhost:8080/update/card' : 'http://localhost:8080/add/card';
         const reqType = isSubmitted ? 'PUT' : 'POST';
 
-        const bodyData = isSubmitted ? { id, title, description }: { title, description };  
-
+        const bodyData = isSubmitted ? { id, title, description } : { title, description };
+        console.log(bodyData)
         fetch(endpoint, {
             method: reqType,
             headers: {
@@ -19,29 +19,31 @@ export default function Card({ id, title, description, index, updateCard, onClic
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
-                markSubmitted();
+                console.log("Received from backend:", data);
+                // Update card in state with returned id and mark as submitted
                 updateCard(index, "id", data.id);
+                updateCard(index, "isSubmitted", true);
             })
             .catch(error => console.log(error))
     }
 
     const handleDelete = async () => {
-  try {
-    const response = await fetch(`http://localhost:8080/cards/${id}`, {
-      method: "DELETE",
-    });
+        try {
+            const response = await fetch(`http://localhost:8080/cards/${id}`, {
+                method: "DELETE",
+            });
 
-    if (!response.ok) {
-      throw new Error("Failed to delete card");
-    }
+            if (!response.ok) {
+                console.log(response)
+                throw new Error("Failed to delete card");
+            }
 
-    // Call parent deleteCard to update state
-    deleteCard(index);
-  } catch (err) {
-    console.error("Error deleting card:", err);
-  }
-};
+            // Call parent deleteCard to update state
+            deleteCard(index);
+        } catch (err) {
+            console.error("Error deleting card:", err);
+        }
+    };
 
 
     return (
@@ -51,12 +53,11 @@ export default function Card({ id, title, description, index, updateCard, onClic
                     <button className="submit-btn" onClick={addToDb}>
                         {isSubmitted ? "Update" : "Submit"}
                     </button>
-                    <button className="delete-btn" 
-                        onClick={(e) => 
-                            { 
-                              handleDelete();
-                              e.stopPropagation(); 
-                            }}>
+                    <button className="delete-btn"
+                        onClick={(e) => {
+                            handleDelete();
+                            e.stopPropagation();
+                        }}>
                         Remove
                     </button>
                 </div>
