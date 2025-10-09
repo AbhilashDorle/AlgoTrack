@@ -34,6 +34,7 @@ export default function Card({ id, title, description, index, updateCard, onClic
             });
 
             if (!response.ok) {
+                console.log(response)
                 throw new Error("Failed to delete card");
             }
 

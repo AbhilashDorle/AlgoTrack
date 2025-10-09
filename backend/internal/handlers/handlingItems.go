@@ -101,6 +101,7 @@ func UpdateCard(w http.ResponseWriter, r *http.Request) {
 // DeleteCard handles DELETE /cards/{id}
 func DeleteCard(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
+	fmt.Println(vars)
 	idStr := vars["id"]
 
 	// Convert string ID to int
@@ -113,20 +114,20 @@ func DeleteCard(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Optional: get user ID from request body or token
-	var payload struct {
-		UserID int `json:"user_id"`
-	}
-	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil || payload.UserID <= 0 {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": "UserID missing or invalid"})
-		return
-	}
+	// var payload struct {
+	// 	UserID int `json:"user_id"`
+	// }
+	// if err := json.NewDecoder(r.Body).Decode(&payload); err != nil || payload.UserID <= 0 {
+	// 	w.Header().Set("Content-Type", "application/json")
+	// 	w.WriteHeader(http.StatusBadRequest)
+	// 	json.NewEncoder(w).Encode(map[string]string{"error": "UserID missing or invalid"})
+	// 	return
+	// }
 
 	// Delete from DB - ensure only owner can delete
 	res, err := db.DB.Exec(
-		"DELETE FROM cards WHERE id = $1 AND user_id = $2",
-		id, payload.UserID,
+		"DELETE FROM cards WHERE id = $1",
+		id,
 	)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
