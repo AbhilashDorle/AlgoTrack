@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/AbhilashDorle/AlgoTrack/firebase"
 	"github.com/AbhilashDorle/AlgoTrack/internal/db"
 	"github.com/AbhilashDorle/AlgoTrack/internal/routes"
 	"github.com/gorilla/handlers"
@@ -12,6 +13,9 @@ import (
 )
 
 func main() {
+
+	firebase.InitFirebase()
+
 	r := mux.NewRouter()
 	routes.RegisterCardRoutes(r)
 
