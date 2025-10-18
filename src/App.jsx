@@ -8,6 +8,8 @@ function App() {
   const [cardComponent, setCardComponent] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
   const [loginFlag, setLoginFlag] = useState(false);
+  const [token, setToken] = useState(null)
+
   // const [userId, setUserId] = useState(null); // track logged-in user
 
   // Add a new empty card
@@ -43,8 +45,9 @@ function App() {
   return (
     <div className='main-div'>
       {!loginFlag && 
-        <Login 
-          changeFlag={(flag, id) => { 
+        <Login
+          setToken = {setToken} 
+          changeFlag={(flag) => { 
             setLoginFlag(flag); 
             // setUserId(id); // capture logged-in user ID
           }} 
@@ -65,6 +68,7 @@ function App() {
                     title={cardComponent[selectedCard].title}
                     description={cardComponent[selectedCard].description}
                     index={selectedCard}
+                    token={token}
                     isSubmitted={cardComponent[selectedCard].isSubmitted}
                     updateCard={updateCard}
                     deleteCard={deleteCard}
@@ -86,6 +90,7 @@ function App() {
                   title={card.title}
                   description={card.description}
                   index={i}
+                  token={token}
                   isSubmitted={card.isSubmitted}
                   updateCard={updateCard}
                   deleteCard={deleteCard}

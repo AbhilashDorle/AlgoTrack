@@ -26,7 +26,7 @@ func main() {
 	corsObj := handlers.CORS(
 		handlers.AllowedOrigins([]string{"*"}),
 		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
-		handlers.AllowedHeaders([]string{"Content-Type"}),
+		handlers.AllowedHeaders([]string{"Authorization", "Content-Type"}),
 	)
 
 	log.Println("Server running on http://localhost:8080")

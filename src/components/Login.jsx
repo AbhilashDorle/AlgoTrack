@@ -1,13 +1,25 @@
 import React from "react";
 import './Login.css'
+import handleLogin from "./auth";
 
-export default function Login(props){
+export default function Login(props) {
 
-    const handleClick = () =>{
-        props.changeFlag(true)
+    const handleClick = async () => {
+    const username = document.querySelector('.username-input').value;
+    const password = document.querySelector('.password-input').value;
+
+    const [isLogged , token] = await handleLogin(username, password); // 👈 wait for it to resolve
+
+    if (isLogged) {
+      props.setToken(token)  
+      props.changeFlag(true);
+    } else {
+      alert("Login failed");
     }
+  };
 
-    return(
+
+    return (
         <div className="main-login">
             <div className="user-details-div">
                 <p className="tagline-text">One Card at a time</p>
@@ -23,7 +35,7 @@ export default function Login(props){
                     <p className="forgot-password-text">Forgot Password?</p>
                     <button onClick={handleClick} className="login-btn">Get Started</button>
                 </div>
-                
+
 
             </div>
         </div>
