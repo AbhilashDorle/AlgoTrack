@@ -20,16 +20,12 @@ type Card struct {
 // AddCard inserts a new card into the DB
 func AddCard(w http.ResponseWriter, r *http.Request) {
 	var card Card
-	fmt.Println("Inside Add Card")
 
 	// Decode JSON from request body
 	if err := json.NewDecoder(r.Body).Decode(&card); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
 	}
-
-	fmt.Println("Card Title:", card.Title)
-	fmt.Println("Card Description:", card.Description)
 	/*id, title description, user_id*/
 	err := db.DB.QueryRow(
 		"INSERT INTO cards (title, description) VALUES ($1, $2) RETURNING id",
@@ -61,9 +57,8 @@ func UpdateCard(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request payload"})
 		return
 	}
-	fmt.Println("Card Title:", card.Title)
-	fmt.Println("Card Title:", card.ID)
-	fmt.Println("Card Description:", card.Description)
+
+	fmt.Println("Updated Card Description:", card.Description)
 	// Validate ID and UserID
 	if card.ID <= 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -100,6 +95,8 @@ func UpdateCard(w http.ResponseWriter, r *http.Request) {
 
 // DeleteCard handles DELETE /cards/{id}
 func DeleteCard(w http.ResponseWriter, r *http.Request) {
+
+	fmt.Println("Inside Delete")
 	vars := mux.Vars(r)
 	fmt.Println(vars)
 	idStr := vars["id"]
@@ -129,11 +126,14 @@ func DeleteCard(w http.ResponseWriter, r *http.Request) {
 		"DELETE FROM cards WHERE id = $1",
 		id,
 	)
+	fmt.Println(res)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 		return
+	} else {
+		fmt.Println(err)
 	}
 
 	rowsAffected, _ := res.RowsAffected()
