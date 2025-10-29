@@ -1,16 +1,13 @@
 import React from "react";
 import './Card.css'
 
-export default function Card({ id, title, description, index, updateCard, onClick, isSubmitted, deleteCard, token }) {
+export default function Card({ id, title, description, index, updateCard, onClick, isSubmitted, deleteCard, token, user_id }) {
 
     const addToDb = () => {
-        console.log("Submit/Update Button Clicked")
-        console.log(id)
         const endpoint = isSubmitted ? 'http://localhost:8080/update/card' : 'http://localhost:8080/add/card';
         const reqType = isSubmitted ? 'PUT' : 'POST';
 
-        const bodyData = isSubmitted ? { title, description } : { id, title, description };
-        console.log(bodyData)
+        const bodyData = isSubmitted ? { id, title, description } : { id, user_id, title, description };
         fetch(endpoint, {
             method: reqType,
             headers: {
@@ -21,7 +18,6 @@ export default function Card({ id, title, description, index, updateCard, onClic
         })
             .then(response => response.json())
             .then(data => {
-                console.log("Received from backend:", data);
                 // Update card in state with returned id and mark as submitted
                 updateCard(index, "id", data.id);
                 updateCard(index, "isSubmitted", true);
@@ -31,7 +27,6 @@ export default function Card({ id, title, description, index, updateCard, onClic
 
     const handleDelete = async () => {
         try {
-            console.log(id)
             const response = await fetch(`http://localhost:8080/deletecards/${id}`, {
                 method: "DELETE",
                 headers: {
