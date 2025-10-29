@@ -14,7 +14,7 @@ type Card struct {
 	ID          int    `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
-	// UserID      int    `json:"user_id"`
+	UserID      string `json:"user_id"`
 }
 
 // AddCard inserts a new card into the DB
@@ -27,12 +27,11 @@ func AddCard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	/*id, title description, user_id*/
-	err := db.DB.QueryRow(
-		"INSERT INTO cards (title, description) VALUES ($1, $2) RETURNING id",
-		card.Title, card.Description,
-	).Scan(&card.ID)
 
-	fmt.Println("Inserted card with ID:", card.ID)
+	err := db.DB.QueryRow(
+		"INSERT INTO cards (user_id, title, description) VALUES ($1, $2, $3) RETURNING id",
+		card.UserID, card.Title, card.Description,
+	).Scan(&card.ID)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -58,7 +57,6 @@ func UpdateCard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("Updated Card Description:", card.Description)
 	// Validate ID and UserID
 	if card.ID <= 0 {
 		w.Header().Set("Content-Type", "application/json")
@@ -96,9 +94,7 @@ func UpdateCard(w http.ResponseWriter, r *http.Request) {
 // DeleteCard handles DELETE /cards/{id}
 func DeleteCard(w http.ResponseWriter, r *http.Request) {
 
-	fmt.Println("Inside Delete")
 	vars := mux.Vars(r)
-	fmt.Println(vars)
 	idStr := vars["id"]
 
 	// Convert string ID to int
@@ -110,23 +106,12 @@ func DeleteCard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Optional: get user ID from request body or token
-	// var payload struct {
-	// 	UserID int `json:"user_id"`
-	// }
-	// if err := json.NewDecoder(r.Body).Decode(&payload); err != nil || payload.UserID <= 0 {
-	// 	w.Header().Set("Content-Type", "application/json")
-	// 	w.WriteHeader(http.StatusBadRequest)
-	// 	json.NewEncoder(w).Encode(map[string]string{"error": "UserID missing or invalid"})
-	// 	return
-	// }
-
 	// Delete from DB - ensure only owner can delete
 	res, err := db.DB.Exec(
 		"DELETE FROM cards WHERE id = $1",
 		id,
 	)
-	fmt.Println(res)
+
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -148,4 +133,47 @@ func DeleteCard(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(map[string]string{"message": "Card deleted successfully"})
+}
+
+func GetCards(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	vars := mux.Vars(r)
+	userID := vars["user_id"]
+
+	rows, err := db.DB.Query(
+		"SELECT id, title, description FROM cards WHERE user_id = $1",
+		userID,
+	)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		return
+	}
+	defer rows.Close()
+
+	cards := []Card{}
+
+	for rows.Next() {
+		var card Card
+		if err := rows.Scan(&card.ID, &card.Title, &card.Description); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+			return
+		}
+
+		// fmt.Printf("Card -> ID: %d | Title: %s | Desc: %s\n", card.ID, card.Title, card.Description)
+		cards = append(cards, card)
+	}
+
+	// If no cards found
+	if len(cards) == 0 {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]string{"error": "No cards found for this user"})
+		return
+	}
+
+	// Success
+	json.NewEncoder(w).Encode(cards)
 }

@@ -10,7 +10,7 @@ function App() {
   const [loginFlag, setLoginFlag] = useState(false);
   const [token, setToken] = useState(null)
 
-  // const [userId, setUserId] = useState(null); // track logged-in user
+  const [userId, setUserId] = useState(null); // track logged-in user
 
   // Add a new empty card
   const addCard = () => {
@@ -33,6 +33,32 @@ function App() {
       newCards[index] = { ...newCards[index], [field]: value };
       return newCards;
     });
+
+  };
+
+  const handleGet = async (user_id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/getcards/${user_id}`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+      });
+
+      if (!response.ok) {
+        console.log(response)
+        throw new Error("Failed to get cards");
+      }
+
+      const data = await response.json();
+
+      setCardComponent(data.map(card => ({
+        ...card,
+        isSubmitted: true // So UI knows these came from DB
+      })));
+    } catch (err) {
+      console.error("Error retrieving cards:", err);
+    }
   };
 
   const breakpointColumns = {
@@ -44,21 +70,21 @@ function App() {
 
   return (
     <div className='main-div'>
-      {!loginFlag && 
+      {!loginFlag &&
         <Login
-          setToken = {setToken} 
-          changeFlag={(flag) => { 
-            setLoginFlag(flag); 
-            // setUserId(id); // capture logged-in user ID
-          }} 
+          setToken={setToken}
+          setUserId={setUserId}
+          changeFlag={(flag) => {
+            setLoginFlag(flag);
+          }}
         />
       }
-{/* ******LOGOUT FUNCTIONALITY REMAINS************ */}
+      {/* ******LOGOUT FUNCTIONALITY REMAINS************ */}
 
       {loginFlag &&
         <div className="logged-in-container">
           <button onClick={addCard} className='addCard-btn'>Add card</button>
-
+          <button onClick={() => handleGet(userId)} className='addCard-btn'>GET cards</button>
           <div className="main-app-div">
             {selectedCard !== null && (
               <div className="overlay" onClick={() => setSelectedCard(null)}>
@@ -69,10 +95,11 @@ function App() {
                     description={cardComponent[selectedCard].description}
                     index={selectedCard}
                     token={token}
+                    user_id={userId}
                     isSubmitted={cardComponent[selectedCard].isSubmitted}
                     updateCard={updateCard}
                     deleteCard={deleteCard}
-                    onClick={() => {}}
+                    onClick={() => { }}
                   />
                 </div>
               </div>
@@ -87,6 +114,7 @@ function App() {
                 <Card
                   key={i}
                   id={card.id}
+                  user_id={userId}
                   title={card.title}
                   description={card.description}
                   index={i}
