@@ -26,3 +26,5 @@ dist-ssr
 #Files to ignore
 
 backend/firebase/serviceAccountKey.json
+
+backend/internal/utils/secretKey.json

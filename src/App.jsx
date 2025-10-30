@@ -36,9 +36,37 @@ function App() {
 
   };
 
+  //Replace with useEffect with user_id in the dependency array
+  //This way the system will GET all cards on login
+  //Need to handle logic for signup
   const handleGet = async (user_id) => {
     try {
       const response = await fetch(`http://localhost:8080/getcards/${user_id}`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+      });
+
+      if (!response.ok) {
+        console.log(response)
+        throw new Error("Failed to get cards");
+      }
+
+      const data = await response.json();
+
+      setCardComponent(data.map(card => ({
+        ...card,
+        isSubmitted: true // So UI knows these came from DB
+      })));
+    } catch (err) {
+      console.error("Error retrieving cards:", err);
+    }
+  };
+
+  const handleSuggestion = async (user_id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/suggestions/${user_id}`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`
@@ -85,6 +113,7 @@ function App() {
         <div className="logged-in-container">
           <button onClick={addCard} className='addCard-btn'>Add card</button>
           <button onClick={() => handleGet(userId)} className='addCard-btn'>GET cards</button>
+          <button onClick={() =>handleSuggestion(userId)} className='addCard-btn'>Suggestions</button>
           <div className="main-app-div">
             {selectedCard !== null && (
               <div className="overlay" onClick={() => setSelectedCard(null)}>

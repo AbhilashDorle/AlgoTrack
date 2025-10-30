@@ -11,15 +11,12 @@ import (
 
 func RegisterCardRoutes(r *mux.Router) {
 	fmt.Println("Request received in router")
-	// r.HandleFunc("/login", handlers.Login).Methods("POST")
-	// r.HandleFunc("/signup", handlers.Signup).Methods("POST")
 
 	r.Handle("/add/card", middleware.AuthMiddleware(http.HandlerFunc(handlers.AddCard))).Methods("POST")
 	r.Handle("/update/card", middleware.AuthMiddleware(http.HandlerFunc(handlers.UpdateCard))).Methods("PUT")
 	r.Handle("/deletecards/{id}", middleware.AuthMiddleware(http.HandlerFunc(handlers.DeleteCard))).Methods("DELETE")
 	r.Handle("/getcards/{user_id}", middleware.AuthMiddleware(http.HandlerFunc(handlers.GetCards))).Methods("GET")
 
-	// r.HandleFunc("/add/card", handlers.AddCard).Methods("POST")
-	// r.HandleFunc("/update/card", handlers.UpdateCard).Methods("PUT")
-	// r.HandleFunc("/cards/{id}", handlers.DeleteCard).Methods("DELETE")
+	r.Handle("/suggestions/{user_id}", middleware.AuthMiddleware(http.HandlerFunc(handlers.GetSuggestions))).Methods("GET")
+
 }

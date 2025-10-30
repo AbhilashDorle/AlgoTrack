@@ -141,30 +141,11 @@ func GetCards(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	userID := vars["user_id"]
-
-	rows, err := db.DB.Query(
-		"SELECT id, title, description FROM cards WHERE user_id = $1",
-		userID,
-	)
+	cards, err := FetchCardsByUser(userID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 		return
-	}
-	defer rows.Close()
-
-	cards := []Card{}
-
-	for rows.Next() {
-		var card Card
-		if err := rows.Scan(&card.ID, &card.Title, &card.Description); err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
-			return
-		}
-
-		// fmt.Printf("Card -> ID: %d | Title: %s | Desc: %s\n", card.ID, card.Title, card.Description)
-		cards = append(cards, card)
 	}
 
 	// If no cards found
@@ -176,4 +157,23 @@ func GetCards(w http.ResponseWriter, r *http.Request) {
 
 	// Success
 	json.NewEncoder(w).Encode(cards)
+}
+
+func FetchCardsByUser(userID string) ([]Card, error) {
+	rows, err := db.DB.Query("SELECT id, title, description FROM cards WHERE user_id = $1", userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	cards := []Card{}
+	for rows.Next() {
+		var card Card
+		if err := rows.Scan(&card.ID, &card.Title, &card.Description); err != nil {
+			return nil, err
+		}
+		cards = append(cards, card)
+	}
+
+	return cards, nil
 }
