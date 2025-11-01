@@ -1,16 +1,16 @@
 package utils
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-)
+	"log"
+	"os"
+	"strings"
 
-type Card struct {
-	ID          int    `json:"id"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	UserID      string `json:"user_id"`
-}
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/option"
+)
 
 //need to understand cards interface{} better
 
@@ -20,26 +20,46 @@ func CallAI_ForSuggestions(cards interface{}) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Println("Inside CallAI_ForSuggestions")
-	fmt.Println((jsonData))
-	prompt := fmt.Sprintf("User cards: %s. Suggest a topic.", string(jsonData))
-	// content, err := os.ReadFile("../../internal/utils/secretKey.txt")
+
+	prompt, err := os.ReadFile("../../internal/utils/prompt.txt")
+	if err != nil {
+		log.Fatalf("Error reading prompt file: %v", err)
+	}
+
+	// fmt.Println(string(jsonData))
+	fullPrompt := fmt.Sprintf("%s\n\nCards:\n%s", prompt, string(jsonData))
+
+	content, err := os.ReadFile("../../internal/utils/secretKey.txt")
+	if err != nil {
+		log.Fatalf("Error reading API key file: %v", err)
+	}
+
+	client := openai.NewClient(option.WithAPIKey(string(content)))
+
+	chatCompletion, err := client.Chat.Completions.New(context.TODO(), openai.ChatCompletionNewParams{
+		Messages: []openai.ChatCompletionMessageParamUnion{
+			openai.UserMessage(fullPrompt),
+		},
+		Model: openai.ChatModelGPT4o,
+	})
+	if err != nil {
+		panic(err.Error())
+	}
+	suggestionStr := strings.TrimSpace(chatCompletion.Choices[0].Message.Content)
+
+	// fmt.Println("AI raw response:", suggestionStr)
+
+	return suggestionStr, nil
+
+	// var aiCards []Card
+	// err = json.Unmarshal([]byte(suggestionStr), &aiCards)
 	// if err != nil {
-	// 	log.Fatalf("Error reading API key file: %v", err)
+	// 	return nil, fmt.Errorf("failed to parse AI response: %w\nAI response: %s", err, suggestionStr)
 	// }
 
-	// client := openai.NewClient(option.WithAPIKey(string(content)))
+	// fmt.Println("Unmarshal error:", err)
+	// fmt.Println("Raw AI string length:", len(suggestionStr))
+	// fmt.Printf("Raw AI string: %q\n", suggestionStr)
 
-	// chatCompletion, err := client.Chat.Completions.New(context.TODO(), openai.ChatCompletionNewParams{
-	// 	Messages: []openai.ChatCompletionMessageParamUnion{
-	// 		openai.UserMessage("Say this is a test"),
-	// 	},
-	// 	Model: openai.ChatModelGPT4o,
-	// })
-	// if err != nil {
-	// 	panic(err.Error())
-	// }
-	// println(chatCompletion.Choices[0].Message.Content)
-
-	return prompt, nil
+	// return aiCards, nil
 }

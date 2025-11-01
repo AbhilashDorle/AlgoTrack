@@ -54,7 +54,7 @@ function App() {
       }
 
       const data = await response.json();
-
+      console.log(data)
       setCardComponent(data.map(card => ({
         ...card,
         isSubmitted: true // So UI knows these came from DB
@@ -75,11 +75,11 @@ function App() {
 
       if (!response.ok) {
         console.log(response)
-        throw new Error("Failed to get cards");
+        throw new Error("Failed to get suggestions");
       }
 
       const data = await response.json();
-
+      console.log(data)
       setCardComponent(data.map(card => ({
         ...card,
         isSubmitted: true // So UI knows these came from DB
@@ -113,7 +113,7 @@ function App() {
         <div className="logged-in-container">
           <button onClick={addCard} className='addCard-btn'>Add card</button>
           <button onClick={() => handleGet(userId)} className='addCard-btn'>GET cards</button>
-          <button onClick={() =>handleSuggestion(userId)} className='addCard-btn'>Suggestions</button>
+          <button onClick={() => handleSuggestion(userId)} className='addCard-btn'>Suggestions</button>
           <div className="main-app-div">
             {selectedCard !== null && (
               <div className="overlay" onClick={() => setSelectedCard(null)}>

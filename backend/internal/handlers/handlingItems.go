@@ -155,6 +155,7 @@ func GetCards(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Println(cards)
 	// Success
 	json.NewEncoder(w).Encode(cards)
 }
