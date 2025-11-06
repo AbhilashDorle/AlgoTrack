@@ -111,9 +111,13 @@ function App() {
 
       {loginFlag &&
         <div className="logged-in-container">
-          <button onClick={addCard} className='addCard-btn'>Add card</button>
-          <button onClick={() => handleGet(userId)} className='addCard-btn'>GET cards</button>
-          <button onClick={() => handleSuggestion(userId)} className='addCard-btn'>Suggestions</button>
+          <div className='button-div'>
+            <button onClick={() => handleSuggestion(userId)} className='addCard-btn'>Help Me Revise</button>
+            <div className='db-btn'>
+              <button onClick={addCard} className='addCard-btn'>Add New Card</button>
+              <button onClick={() => handleGet(userId)} className='addCard-btn'>My Existing Cards</button>
+            </div>
+          </div>
           <div className="main-app-div">
             {selectedCard !== null && (
               <div className="overlay" onClick={() => setSelectedCard(null)}>

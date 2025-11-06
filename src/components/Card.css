@@ -13,10 +13,11 @@
     width: 500px;
     height: 3rem;
     border-radius: 10px;
-    font-size: 1.2rem;
+    font-size: 2rem;
     text-align: center;
     background: transparent;
     border: groove;
+    font-weight: bold;
 
 }
 
@@ -28,12 +29,13 @@
     text-align: center;
     background: transparent;
     border: groove;
+    font-weight:lighter;
 
 }
 
 .title-input-tag::placeholder {
     text-align: center;
-    font-size: 30px;
+    font-size: 40px;
     font-weight: bold;
 
 }
