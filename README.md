@@ -1,4 +1,4 @@
-#Overview
+# Overview
 
 While building applications, I often switch between different technologies and concepts. Recently, while working on a React project, I realized that I had forgotten some details in Go that I had learned earlier.
 
@@ -11,7 +11,7 @@ I built an AI-powered revision planner that helps generate a daily revision plan
 The goal is simple:
 revise the right concepts at the right time.
 
-#The Problem
+# The Problem
 
 When learning multiple technologies simultaneously:
 
@@ -20,7 +20,7 @@ When learning multiple technologies simultaneously:
 3.Important topics may not be revisited at the right time
 4.Maintaining a manual revision schedule is tedious
 
-#The Solution
+# The Solution
 
 This app uses AI to generate a personalized daily revision plan based on:
 
@@ -30,19 +30,19 @@ This app uses AI to generate a personalized daily revision plan based on:
 
 Instead of guessing what to revise, the system intelligently suggests what concepts to revisit each day.
 
-#Features
+# Features
 1.Track topics you have studied
 2.Define revision priorities
 3.Generate daily revision plans
 4.Reinforce concepts at the right time
 5.AI-assisted learning workflow
 
-#Tech Stack
+# Tech Stack
 React
 Go (Golang)
 AI - LLM-powered planning and suggestion system
 
-#Why I Built This
+# Why I Built This
 
 This project started as a small experiment but quickly turned into a useful tool for my own learning.
 
