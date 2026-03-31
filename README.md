@@ -53,3 +53,5 @@ Designing learning systems
 Building lightweight AI-driven workflows
 
 It became both a learning tool and a technical exploration.
+
+https://github.com/user-attachments/assets/85290ab9-8da6-49ca-b73c-4ac785a6fb0d
