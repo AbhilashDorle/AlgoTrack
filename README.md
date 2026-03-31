@@ -1,12 +1,55 @@
-# React + Vite
+#Overview
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+While building applications, I often switch between different technologies and concepts. Recently, while working on a React project, I realized that I had forgotten some details in Go that I had learned earlier.
 
-Currently, two official plugins are available:
+Even though I try to regularly revise what I study, I noticed that I didn’t have a clear and structured system for deciding what to revise and when.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This project was born from that realization.
 
-## Expanding the ESLint configuration
+I built an AI-powered revision planner that helps generate a daily revision plan based on previously learned topics and priorities.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+The goal is simple:
+revise the right concepts at the right time.
+
+#The Problem
+
+When learning multiple technologies simultaneously:
+
+1.It’s easy to forget concepts learned weeks ago
+2.Revision becomes random instead of structured
+3.Important topics may not be revisited at the right time
+4.Maintaining a manual revision schedule is tedious
+
+#The Solution
+
+This app uses AI to generate a personalized daily revision plan based on:
+
+1.What topics you have studied
+2.Your revision priorities
+3.Concept reinforcement needs over time
+
+Instead of guessing what to revise, the system intelligently suggests what concepts to revisit each day.
+
+#Features
+1.Track topics you have studied
+2.Define revision priorities
+3.Generate daily revision plans
+4.Reinforce concepts at the right time
+5.AI-assisted learning workflow
+
+#Tech Stack
+React
+Go (Golang)
+AI - LLM-powered planning and suggestion system
+
+#Why I Built This
+
+This project started as a small experiment but quickly turned into a useful tool for my own learning.
+
+While building it, I also explored:
+
+AI-assisted productivity tools
+Designing learning systems
+Building lightweight AI-driven workflows
+
+It became both a learning tool and a technical exploration.
