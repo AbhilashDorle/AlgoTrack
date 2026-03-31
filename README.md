@@ -54,4 +54,4 @@ Building lightweight AI-driven workflows
 
 It became both a learning tool and a technical exploration.
 
-https://github.com/user-attachments/assets/85290ab9-8da6-49ca-b73c-4ac785a6fb0d
+https://github.com/user-attachments/assets/65352b2d-2633-4644-aedb-254496bc932a
